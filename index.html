@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#ffd9a0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Isabel Leyla's Wordlings</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FFF3E2; --sand:#FFE3BE; --ink:#3B2A2F;
+  --coral:#FF7A6B; --teal:#2FC3B4; --sun:#FFC145; --lilac:#A78BFA; --leaf:#5FCF6B;
+  --sky:#6EC6FF; --pink:#FF9CC5; --shadow:rgba(59,42,47,.18);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden}
+body{
+  font-family:"Baloo 2",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  background:var(--cream); color:var(--ink);
+  user-select:none;-webkit-user-select:none;touch-action:manipulation;
+  overscroll-behavior:none;
+}
+#app{position:fixed;inset:0;display:flex;flex-direction:column}
+.screen{position:absolute;inset:0;display:none;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.screen.on{display:flex}
+.pad{padding:14px}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:.2px}
+
+/* ---------- chunky buttons ---------- */
+.btn{
+  border:none;border-radius:26px;font:inherit;font-weight:800;color:#fff;
+  background:var(--coral);padding:16px 24px;font-size:20px;cursor:pointer;
+  box-shadow:0 6px 0 rgba(0,0,0,.15);transition:transform .08s,box-shadow .08s;
+}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.15)}
+.btn.teal{background:var(--teal)} .btn.sun{background:var(--sun);color:var(--ink)}
+.btn.lilac{background:var(--lilac)} .btn.leaf{background:var(--leaf)}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:0 4px 0 var(--shadow)}
+.btn.sm{padding:10px 16px;font-size:16px;border-radius:20px}
+.icon-btn{
+  width:52px;height:52px;border-radius:50%;border:none;background:#fff;color:var(--ink);
+  font-size:24px;box-shadow:0 4px 0 var(--shadow);display:grid;place-items:center;cursor:pointer
+}
+.icon-btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--shadow)}
+
+/* ---------- home ---------- */
+#home{background:
+  radial-gradient(120% 60% at 50% 0%, #FFE9C7 0%, var(--cream) 60%);
+  align-items:center;justify-content:center;gap:10px;text-align:center}
+#home h1{font-size:clamp(26px,8vw,44px);line-height:1.05}
+#home .sub{opacity:.65;font-weight:700;margin-top:-2px}
+.homebtns{display:flex;flex-direction:column;gap:14px;width:min(360px,84%);margin-top:8px}
+.corner{position:absolute;top:calc(10px + env(safe-area-inset-top));right:10px;display:flex;gap:8px}
+
+/* ---------- pack picker ---------- */
+.packlist{display:flex;flex-direction:column;gap:12px;overflow:auto;padding:6px 14px 24px;flex:1}
+.pack{
+  display:flex;align-items:center;gap:14px;background:#fff;border-radius:24px;padding:14px 16px;
+  box-shadow:0 5px 0 var(--shadow);border:none;font:inherit;text-align:left;cursor:pointer;color:var(--ink)
+}
+.pack:active{transform:translateY(3px);box-shadow:0 2px 0 var(--shadow)}
+.pack .emo{font-size:34px;width:46px;text-align:center}
+.pack .nm{font-weight:800;font-size:19px}
+.pack .bl{font-size:13px;opacity:.6;font-weight:600}
+.pack .bar{height:9px;border-radius:9px;background:#eee;margin-top:6px;overflow:hidden}
+.pack .bar i{display:block;height:100%;background:var(--leaf);border-radius:9px}
+
+/* ---------- play ---------- */
+#play{background:radial-gradient(120% 55% at 50% 100%, #E9FBF6 0%, var(--cream) 65%)}
+.topbar{display:flex;align-items:center;gap:8px;padding:10px 12px}
+.topbar .spacer{flex:1}
+.stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:0 12px;min-height:0;overflow-y:auto}
+.sentence{font-size:16px;font-weight:700;opacity:.7;text-align:center;max-width:520px;line-height:1.35}
+.bigword{font-size:clamp(24px,7.5vw,40px);font-weight:800;letter-spacing:.5px}
+.bigword .dbl{border-bottom:5px solid rgba(255,122,107,.55);border-radius:2px}
+.egg{width:min(110px,26vh);flex:0 0 auto;animation:wob 2.6s ease-in-out infinite;transform-origin:50% 90%}
+.egg svg{width:100%;height:100%;display:block}
+@keyframes wob{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+.wordrow{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}
+.chunk{
+  background:#fff;border-radius:18px;padding:10px 14px;font-size:clamp(20px,6.2vw,34px);font-weight:800;
+  box-shadow:0 5px 0 var(--shadow);border:none;font-family:inherit;color:var(--ink);cursor:pointer;
+  transition:transform .12s, box-shadow .12s, opacity .2s;
+}
+.chunk.c0{background:#FFD9D4}.chunk.c1{background:#CFF3EE}.chunk.c2{background:#FFEFC2}
+.chunk.c3{background:#E6DEFF}.chunk.c4{background:#D8F5DC}.chunk.c5{background:#DCEEFF}
+.chunk:active{transform:translateY(3px);box-shadow:0 2px 0 var(--shadow)}
+.chunk.used{opacity:.18;pointer-events:none;transform:scale(.85)}
+.hint{animation:pulse 1s infinite;outline:4px solid var(--sun);outline-offset:2px}
+.chunk .dbl{border-bottom:4px solid rgba(255,122,107,.6);border-radius:2px}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.slots{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;min-height:64px}
+.slot{
+  min-width:64px;height:60px;border-radius:18px;border:4px dashed rgba(59,42,47,.22);
+  display:grid;place-items:center;font-size:clamp(20px,6.2vw,34px);font-weight:800;padding:0 12px;
+}
+.slot.filled{border-style:solid;border-color:transparent;box-shadow:0 5px 0 var(--shadow)}
+.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px) rotate(-3deg)}40%{transform:translateX(8px) rotate(3deg)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.pop{animation:pop .35s}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+.tray{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:0 8px 6px}
+.letter{
+  width:54px;height:58px;border-radius:16px;background:#fff;font-size:26px;font-weight:800;
+  box-shadow:0 5px 0 var(--shadow);border:none;font-family:inherit;color:var(--ink);cursor:pointer
+}
+.letter:active{transform:translateY(3px);box-shadow:0 2px 0 var(--shadow)}
+.letter.used{opacity:.18;pointer-events:none}
+.label{font-weight:800;opacity:.55;font-size:14px;letter-spacing:1px;text-transform:uppercase}
+.bottombar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;padding:10px 12px calc(14px + env(safe-area-inset-bottom))}
+.btn.sm{white-space:nowrap}
+
+/* ---------- island / room ---------- */
+#room{background:linear-gradient(180deg,#BDEBFF 0%,#DFF6E4 45%,#FFE9C7 100%)}
+#islandArea{position:relative;flex:1;overflow:hidden}
+#scenery{position:absolute;inset:0;pointer-events:none}
+#scenery svg{position:absolute;bottom:0;left:0;width:100%;height:100%}
+.crit{position:absolute;width:88px;height:88px;touch-action:none;cursor:grab;filter:drop-shadow(0 5px 4px rgba(0,0,0,.15))}
+.crit.dragging{z-index:99;cursor:grabbing}
+.crit .nametag{
+  position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);
+  background:#fff;border-radius:12px;padding:1px 7px;font-size:10px;font-weight:800;white-space:nowrap;
+  box-shadow:0 2px 0 var(--shadow)
+}
+.empty-note{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;opacity:.6;font-weight:700}
+
+/* ---------- hatch overlay ---------- */
+#hatch{position:absolute;inset:0;display:none;place-items:center;background:rgba(255,243,226,.94);z-index:50;flex-direction:column;gap:14px;padding:20px;text-align:center}
+#hatch.on{display:flex;align-items:center;justify-content:center}
+#hatch svg{width:min(210px,48vw);height:min(210px,48vw)}
+.confetti{position:absolute;width:10px;height:14px;border-radius:3px;pointer-events:none;z-index:60}
+
+/* ---------- sheets ---------- */
+.sheet{position:absolute;inset:0;background:rgba(59,42,47,.35);display:none;align-items:flex-end;z-index:80}
+.sheet.on{display:flex}
+.sheet .inner{background:var(--cream);width:100%;max-height:88%;overflow:auto;border-radius:28px 28px 0 0;padding:18px 16px calc(22px + env(safe-area-inset-bottom))}
+.row{display:flex;align-items:center;gap:10px;margin:12px 0}
+.row label{font-weight:800;flex:1}
+input[type=text]{
+  font:inherit;font-size:17px;padding:12px 14px;border-radius:16px;border:3px solid #e8dccb;background:#fff;width:100%
+}
+input[type=range]{flex:1}
+.chipbox{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:#fff;border-radius:14px;padding:8px 12px;font-weight:700;font-size:14px;box-shadow:0 3px 0 var(--shadow);border:none;font-family:inherit;color:var(--ink)}
+.chip.off{opacity:.4}
+.hintline{font-size:13px;opacity:.65;font-weight:600;line-height:1.4}
+.tick{font-size:15px;font-weight:800;color:var(--leaf)}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ================= HOME ================= -->
+  <section id="home" class="screen on">
+    <div class="corner">
+      <button class="icon-btn" id="btnGrown" title="Grown-ups">⚙️</button>
+    </div>
+    <div id="mascot"></div>
+    <h1>Isabel Leyla's<br>Wordlings</h1>
+    <div class="sub">Chunk it. Say it. Spell it.</div>
+    <div class="homebtns">
+      <button class="btn" id="btnPlay">▶ Play</button>
+      <button class="btn teal" id="btnIsland">🏝️ My Island <span id="islandCount"></span></button>
+    </div>
+  </section>
+
+  <!-- ================= PACKS ================= -->
+  <section id="packs" class="screen">
+    <div class="topbar">
+      <button class="icon-btn" data-back="home">←</button>
+      <h2 style="font-size:22px">Where shall we go?</h2>
+    </div>
+    <div class="packlist" id="packList"></div>
+  </section>
+
+  <!-- ================= PLAY ================= -->
+  <section id="play" class="screen">
+    <div class="topbar">
+      <button class="icon-btn" data-back="packs">←</button>
+      <div class="spacer"></div>
+      <div class="label" id="playPack"></div>
+      <div class="spacer"></div>
+      <button class="icon-btn" id="btnSay">🔊</button>
+    </div>
+    <div class="stage" id="stage"></div>
+    <div class="bottombar" id="playBar"></div>
+    <div id="hatch"></div>
+  </section>
+
+  <!-- ================= ISLAND ================= -->
+  <section id="room" class="screen">
+    <div class="topbar">
+      <button class="icon-btn" data-back="home">←</button>
+      <h2 style="font-size:20px">My Island</h2>
+      <div class="spacer"></div>
+      <button class="icon-btn" id="btnShuffleIsland">🎲</button>
+    </div>
+    <div id="islandArea"></div>
+  </section>
+
+  <!-- ================= GROWN-UPS SHEET ================= -->
+  <div class="sheet" id="grownSheet">
+    <div class="inner">
+      <h2>Grown-ups' corner</h2>
+      <p class="hintline">Everything is saved on this phone only. No internet needed after the first load.</p>
+
+      <h3 style="margin-top:18px">Add your own words</h3>
+      <p class="hintline">Type a word from school, then split it into chunks with a dash, e.g. <b>ex-cel-lent</b>. Leave the split empty and I'll guess it.</p>
+      <div class="row"><input type="text" id="newWord" placeholder="excellent" autocapitalize="none" autocorrect="off" spellcheck="false"></div>
+      <div class="row"><input type="text" id="newChunks" placeholder="ex-cel-lent (optional)" autocapitalize="none" autocorrect="off" spellcheck="false"></div>
+      <div class="row"><input type="text" id="newSentence" placeholder="Sentence (optional)"></div>
+      <div class="row"><button class="btn leaf sm" id="btnAddWord">Add word</button><span id="addMsg" class="tick"></span></div>
+      <div class="chipbox" id="myWords"></div>
+
+      <h3 style="margin-top:22px">Voice</h3>
+      <div class="row"><label>Speed</label><input type="range" id="rate" min="0.5" max="1.1" step="0.05"></div>
+      <div class="row"><label>Voice</label><select id="voicePick" style="font:inherit;padding:8px;border-radius:12px;border:3px solid #e8dccb;background:#fff;max-width:60%"></select></div>
+      <div class="row"><button class="btn ghost sm" id="btnTestVoice">Test voice</button></div>
+
+      <h3 style="margin-top:22px">Progress</h3>
+      <div id="statBox" class="hintline"></div>
+      <div class="row" style="margin-top:14px"><button class="btn ghost sm" id="btnReset">Reset everything</button></div>
+      <div class="row"><button class="btn sm" id="btnCloseGrown">Done</button></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* Word bank for Isabel Leyla's Wordlings
+   Format: [word, "chunk|chunk|...", "example sentence", packId]
+   Chunks follow speech syllables (or morphemes in the "build" pack). UK/Scottish spellings.
+*/
+const PACKS = [
+  { id: 'p1', name: 'Two-Chunk Town',   emoji: '🏠', blurb: 'Words made of 2 chunks' },
+  { id: 'p2', name: 'Three-Chunk Forest', emoji: '🌲', blurb: 'Words made of 3 chunks' },
+  { id: 'p3', name: 'Four-Chunk Mountain', emoji: '⛰️', blurb: 'Words made of 4 chunks' },
+  { id: 'p4', name: 'Giant Word Sea',   emoji: '🌊', blurb: 'The really long ones' },
+  { id: 'pb', name: 'Word Builder Lab', emoji: '🧪', blurb: 'Add bits to the start and end' },
+  { id: 'px', name: 'My Own Words',     emoji: '⭐', blurb: 'Words you add yourself' }
+];
+
+const WORDS = [
+/* ---------- p1 : two chunks ---------- */
+["because","be|cause","We went inside because it started to rain.","p1"],
+["before","be|fore","Wash your hands before dinner.","p1"],
+["answer","an|swer","She knew the answer straight away.","p1"],
+["mountain","moun|tain","There was snow on top of the mountain.","p1"],
+["picture","pic|ture","I drew a picture of my cat.","p1"],
+["colour","col|our","Purple is my favourite colour.","p1"],
+["centre","cen|tre","We met in the centre of town.","p1"],
+["cousin","cou|sin","My cousin lives in Glasgow.","p1"],
+["enough","e|nough","There is enough cake for everyone.","p1"],
+["island","is|land","A tiny island sat in the loch.","p1"],
+["jealous","jea|lous","He was jealous of her new bike.","p1"],
+["laughter","laugh|ter","Laughter filled the whole room.","p1"],
+["message","mes|sage","I left a message on the fridge.","p1"],
+["notice","no|tice","Did you notice the new sign?","p1"],
+["ocean","o|cean","Whales swim deep in the ocean.","p1"],
+["perhaps","per|haps","Perhaps it will be sunny tomorrow.","p1"],
+["promise","pro|mise","I promise to tidy my room.","p1"],
+["quiet","qui|et","The library was very quiet.","p1"],
+["reason","rea|son","Tell me the reason you are late.","p1"],
+["science","sci|ence","Science is my best subject.","p1"],
+["special","spe|cial","Today is a very special day.","p1"],
+["sudden","sud|den","There was a sudden loud bang.","p1"],
+["travel","tra|vel","We travel to school by bus.","p1"],
+["window","win|dow","Rain tapped on the window.","p1"],
+["purple","pur|ple","She wore a purple scarf.","p1"],
+["circle","cir|cle","Sit in a circle on the carpet.","p1"],
+["double","dou|ble","I had a double scoop of ice cream.","p1"],
+["Friday","Fri|day","Swimming is on Friday.","p1"],
+["breakfast","break|fast","I had toast for breakfast.","p1"],
+["thirsty","thir|sty","The dog was thirsty after the walk.","p1"],
+["guitar","gui|tar","He plays guitar in a band.","p1"],
+["biscuit","bis|cuit","Have a biscuit with your tea.","p1"],
+["castle","cas|tle","Edinburgh Castle sits on a rock.","p1"],
+["Tuesday","Tues|day","Football club is on Tuesday.","p1"],
+["climbing","climb|ing","She is climbing the big tree.","p1"],
+["whistle","whis|tle","The referee blew the whistle.","p1"],
+
+/* ---------- p2 : three chunks ---------- */
+["family","fam|i|ly","My family went camping.","p2"],
+["different","dif|fer|ent","Every snowflake is different.","p2"],
+["important","im|por|tant","Sleep is really important.","p2"],
+["beautiful","beau|ti|ful","What a beautiful sunset!","p2"],
+["remember","re|mem|ber","Remember to bring your jacket.","p2"],
+["adventure","ad|ven|ture","We had a great adventure in the woods.","p2"],
+["chocolate","choc|o|late","She made a chocolate cake.","p2"],
+["exciting","ex|cit|ing","The film was very exciting.","p2"],
+["favourite","fa|vour|ite","Pizza is my favourite dinner.","p2"],
+["tomorrow","to|mor|row","We are going swimming tomorrow.","p2"],
+["understand","un|der|stand","Now I understand the question.","p2"],
+["wonderful","won|der|ful","You did a wonderful job.","p2"],
+["suddenly","sud|den|ly","Suddenly the lights went out.","p2"],
+["animal","an|i|mal","A badger is a shy animal.","p2"],
+["example","ex|am|ple","Show me an example, please.","p2"],
+["medicine","med|i|cine","The medicine tasted awful.","p2"],
+["separate","sep|a|rate","Keep the socks separate.","p2"],
+["accident","ac|ci|dent","It was only an accident.","p2"],
+["calendar","cal|en|dar","Mark it on the calendar.","p2"],
+["difficult","dif|fi|cult","That puzzle was difficult.","p2"],
+["energy","en|er|gy","She has so much energy.","p2"],
+["library","li|bra|ry","I borrowed three books from the library.","p2"],
+["memory","mem|o|ry","I have a happy memory of that day.","p2"],
+["natural","nat|u|ral","Honey is a natural sweetener.","p2"],
+["popular","pop|u|lar","That song is very popular.","p2"],
+["grandmother","grand|moth|er","My grandmother bakes scones.","p2"],
+["dangerous","dan|ger|ous","Thin ice is dangerous.","p2"],
+["enormous","e|nor|mous","An enormous dog ran past.","p2"],
+["happiness","hap|pi|ness","Puppies bring happiness.","p2"],
+["history","his|to|ry","We learned about Viking history.","p2"],
+["holiday","hol|i|day","Our holiday starts on Friday.","p2"],
+["musician","mu|si|cian","Her mum is a musician.","p2"],
+["possible","pos|si|ble","Is it possible to fix this?","p2"],
+["Saturday","Sat|ur|day","On Saturday we visit the park.","p2"],
+["several","sev|er|al","I asked several people.","p2"],
+["yesterday","yes|ter|day","Yesterday it snowed.","p2"],
+["together","to|geth|er","We finished the jigsaw together.","p2"],
+["volcano","vol|ca|no","The volcano puffed out smoke.","p2"],
+["computer","com|pu|ter","The computer is very slow.","p2"],
+["telephone","tel|e|phone","The telephone rang twice.","p2"],
+["dinosaur","di|no|saur","My favourite dinosaur is a stegosaurus.","p2"],
+["potatoes","po|ta|toes","We planted potatoes in the garden.","p2"],
+["strawberry","straw|ber|ry","One strawberry was left in the punnet.","p2"],
+["butterfly","but|ter|fly","A butterfly landed on my hand.","p2"],
+["dictionary","dic|tion|ary","Look it up in the dictionary.","p2"],
+["disappear","dis|ap|pear","Watch the coin disappear!","p2"],
+["equipment","e|quip|ment","Put the gym equipment away.","p2"],
+["fantastic","fan|tas|tic","That was a fantastic goal.","p2"],
+["generous","gen|er|ous","It was generous of you to share.","p2"],
+["crocodile","croc|o|dile","A crocodile has a huge grin.","p2"],
+["furniture","fur|ni|ture","We moved the furniture around.","p2"],
+
+/* ---------- p3 : four chunks ---------- */
+["interesting","in|ter|est|ing","That was an interesting fact.","p3"],
+["impossible","im|pos|si|ble","Nothing is impossible.","p3"],
+["experiment","ex|per|i|ment","Our experiment made a fizzing sound.","p3"],
+["information","in|for|ma|tion","I found information in the book.","p3"],
+["particular","par|tic|u|lar","She likes this particular jumper.","p3"],
+["celebration","cel|e|bra|tion","There was a big celebration.","p3"],
+["electrical","e|lec|tri|cal","Do not touch electrical wires.","p3"],
+["environment","en|vi|ron|ment","We should look after the environment.","p3"],
+["explanation","ex|pla|na|tion","He gave a clear explanation.","p3"],
+["invisible","in|vis|i|ble","She pretended to be invisible.","p3"],
+["necessary","nec|es|sar|y","A coat is necessary today.","p3"],
+["ordinary","or|di|nar|y","It was just an ordinary Tuesday.","p3"],
+["situation","sit|u|a|tion","It was a tricky situation.","p3"],
+["temperature","tem|per|a|ture","The temperature dropped fast.","p3"],
+["unfortunate","un|for|tu|nate","It was unfortunate that it rained.","p3"],
+["vegetable","veg|e|ta|ble","Carrot is my favourite vegetable.","p3"],
+["disappointed","dis|ap|point|ed","I was disappointed by the ending.","p3"],
+["adventurous","ad|ven|tur|ous","She is very adventurous.","p3"],
+["comfortable","com|fort|a|ble","This chair is comfortable.","p3"],
+["February","Feb|ru|ar|y","My birthday is in February.","p3"],
+["mathematics","math|e|mat|ics","Mathematics can be fun.","p3"],
+["photography","pho|tog|ra|phy","Photography is her hobby.","p3"],
+["supermarket","su|per|mar|ket","We shop at the supermarket.","p3"],
+["watermelon","wa|ter|mel|on","Watermelon is juicy and sweet.","p3"],
+["helicopter","hel|i|cop|ter","A helicopter flew over the hill.","p3"],
+["caterpillar","cat|er|pil|lar","The caterpillar munched a leaf.","p3"],
+["television","tel|e|vi|sion","Turn the television off, please.","p3"],
+["population","pop|u|la|tion","The population of the village is small.","p3"],
+["community","com|mu|ni|ty","Our community held a fair.","p3"],
+["ingredients","in|gre|di|ents","Gather all the ingredients first.","p3"],
+["temporary","tem|po|rar|y","This is a temporary fix.","p3"],
+["accidentally","ac|ci|dent|ally","I accidentally spilled the juice.","p3"],
+
+/* ---------- p4 : five or more chunks ---------- */
+["imagination","i|mag|in|a|tion","Use your imagination!","p4"],
+["investigation","in|ves|ti|ga|tion","The detective began an investigation.","p4"],
+["congratulations","con|grat|u|la|tions","Congratulations on winning!","p4"],
+["extraordinary","ex|traor|di|nar|y","It was an extraordinary sight.","p4"],
+["responsibility","re|spon|si|bil|i|ty","Feeding the dog is my responsibility.","p4"],
+["communication","com|mu|ni|ca|tion","Good communication helps a team.","p4"],
+["organisation","or|gan|i|sa|tion","The organisation helps animals.","p4"],
+["pronunciation","pro|nun|ci|a|tion","Her pronunciation is perfect.","p4"],
+["opportunity","op|por|tu|ni|ty","This is a great opportunity.","p4"],
+["imaginary","i|mag|i|nar|y","He had an imaginary friend.","p4"],
+["alphabetical","al|pha|bet|i|cal","Put the names in alphabetical order.","p4"],
+["refrigerator","re|frig|er|a|tor","Milk lives in the refrigerator.","p4"],
+["international","in|ter|na|tion|al","It is an international competition.","p4"],
+["unbelievable","un|be|liev|a|ble","That trick was unbelievable.","p4"],
+["determination","de|ter|mi|na|tion","She finished with real determination.","p4"],
+["electricity","e|lec|tric|i|ty","The storm cut off the electricity.","p4"],
+["mathematician","math|e|ma|ti|cian","A mathematician loves patterns.","p4"],
+["consideration","con|sid|er|a|tion","Thank you for your consideration.","p4"],
+["encyclopaedia","en|cy|clo|pae|di|a","She read the whole encyclopaedia.","p4"],
+
+/* ---------- pb : morpheme builder (prefix + root + suffix) ---------- */
+["unhappy","un|happy","He felt unhappy about the score.","pb"],
+["rewrite","re|write","I had to rewrite my story.","pb"],
+["preview","pre|view","We got a preview of the film.","pb"],
+["misbehave","mis|behave","The puppies misbehave at dinner.","pb"],
+["disagree","dis|agree","We politely disagree.","pb"],
+["hopeful","hope|ful","She was hopeful about the trip.","pb"],
+["careless","care|less","That was a careless mistake.","pb"],
+["quickly","quick|ly","He ran quickly to the door.","pb"],
+["kindness","kind|ness","Your kindness made my day.","pb"],
+["enjoyment","enjoy|ment","The rain spoiled our enjoyment.","pb"],
+["unhelpful","un|help|ful","The map was unhelpful.","pb"],
+["carelessness","care|less|ness","Carelessness broke the vase.","pb"],
+["disappearance","dis|appear|ance","The disappearance was a mystery.","pb"],
+["misunderstanding","mis|under|stand|ing","It was just a misunderstanding.","pb"],
+["thoughtfully","thought|ful|ly","She answered thoughtfully.","pb"],
+["unbreakable","un|break|able","This cup is unbreakable.","pb"],
+["replacement","re|place|ment","We need a replacement bulb.","pb"],
+["powerlessness","power|less|ness","He felt a wave of powerlessness.","pb"],
+["reappearing","re|appear|ing","The sun keeps reappearing.","pb"],
+["uncomfortable","un|comfort|able","The seat was uncomfortable.","pb"],
+["disagreement","dis|agree|ment","They had a small disagreement.","pb"],
+["unbelievably","un|believ|ably","It was unbelievably cold.","pb"],
+["preparation","prepar|ation","Preparation makes it easier.","pb"],
+["helplessly","help|less|ly","The kitten mewed helplessly.","pb"]
+];
+
+</script>
+<script>
+/* ============ Isabel Leyla's Wordlings ============ */
+(function(){
+'use strict';
+
+/* ---------- tiny storage that never crashes ---------- */
+var MEM = {};
+var store = {
+  get: function(k){ try{ var v = localStorage.getItem(k); return v==null?MEM[k]:v; }catch(e){ return MEM[k]; } },
+  set: function(k,v){ MEM[k]=v; try{ localStorage.setItem(k,v); }catch(e){} }
+};
+var KEY = 'leyla-wordlings-v1';
+var S = { progress:{}, island:[], custom:[], rate:0.85, voice:'', lastPack:'p1' };
+try{ var raw = store.get(KEY); if(raw) S = Object.assign(S, JSON.parse(raw)); }catch(e){}
+function save(){ store.set(KEY, JSON.stringify(S)); }
+
+/* ---------- helpers ---------- */
+var $ = function(s,r){ return (r||document).querySelector(s); };
+var $$ = function(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+function hash(str){ var h=2166136261; for(var i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619);} return (h>>>0); }
+function rngFrom(seed){ var s=seed||1; return function(){ s = (s*1664525 + 1013904223) % 4294967296; return s/4294967296; }; }
+function shuffle(a, rnd){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor((rnd?rnd():Math.random())*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function cap(w){ return w.charAt(0).toUpperCase()+w.slice(1); }
+
+/* ---------- word pool ---------- */
+function allWords(){ return WORDS.concat(S.custom.map(function(c){ return [c[0],c[1],c[2],'px']; })); }
+function packWords(pid){ return allWords().filter(function(w){ return w[3]===pid; }); }
+function prog(w){ return S.progress[w] || {built:0, written:0}; }
+
+/* rough syllable guesser for parent-added words (VCCV / VCV rules + final -le) */
+function guessChunks(word){
+  var w = word.toLowerCase();
+  var isV = function(c){ return c && 'aeiouy'.indexOf(c)>-1; };
+  var cuts = [];
+  for(var i=1;i<w.length-1;i++){
+    var a=w[i-1], b=w[i], c=w[i+1];
+    if(isV(a) && !isV(b) && !isV(c) && isV(w[i+2])){ cuts.push(i+1); i++; }        // VC|CV
+    else if(isV(a) && !isV(b) && isV(c) && i>1){ cuts.push(i); }                    // V|CV
+  }
+  // consonant + le  ->  keep together at the end (ta|ble, cir|cle)
+  if(/[^aeiouy]le$/.test(w)) { var p=w.length-3; if(cuts.indexOf(p)<0) cuts.push(p); }
+  cuts = cuts.filter(function(x,i,arr){ return arr.indexOf(x)===i && x>0 && x<w.length; }).sort(function(a,b){return a-b;});
+  // no chunk shorter than 1, no adjacent cuts
+  var clean=[], last=0;
+  cuts.forEach(function(x){ if(x-last>=2 && w.length-x>=2){ clean.push(x); last=x; } });
+  if(!clean.length) return [word];
+  var out=[], prev=0;
+  clean.forEach(function(x){ out.push(word.slice(prev,x)); prev=x; });
+  out.push(word.slice(prev));
+  return out.filter(Boolean);
+}
+
+/* ---------- speech ---------- */
+var voices = [];
+function loadVoices(){
+  try{ voices = speechSynthesis.getVoices()||[]; }catch(e){ voices=[]; }
+  var sel = $('#voicePick'); if(!sel) return;
+  sel.innerHTML = '<option value="">Automatic</option>' + voices.map(function(v,i){
+    return '<option value="'+v.name+'">'+v.name+' ('+v.lang+')</option>';
+  }).join('');
+  sel.value = S.voice || '';
+}
+function pickVoice(){
+  if(!voices.length){ try{ voices = speechSynthesis.getVoices()||[]; }catch(e){} }
+  if(S.voice){ var v = voices.filter(function(x){return x.name===S.voice;})[0]; if(v) return v; }
+  var order = ['en-GB','en_GB','en-IE','en-AU','en-US'];
+  for(var i=0;i<order.length;i++){
+    var m = voices.filter(function(x){ return (x.lang||'').replace('_','-').indexOf(order[i])===0; });
+    if(m.length){
+      var f = m.filter(function(x){ return /female|woman|karen|serena|kate|libby|sonia|google uk english female/i.test(x.name); });
+      return f[0]||m[0];
+    }
+  }
+  return voices[0];
+}
+function say(text, rate){
+  try{
+    speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    var v = pickVoice(); if(v){ u.voice=v; u.lang=v.lang; } else { u.lang='en-GB'; }
+    u.rate = rate || S.rate; u.pitch = 1.05;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function sayWord(word, chunks){
+  say(word);
+}
+function sayChunks(chunks){
+  try{ speechSynthesis.cancel(); }catch(e){}
+  chunks.forEach(function(c,i){ setTimeout(function(){ say(c, Math.max(0.5,S.rate-0.15)); }, i*620); });
+}
+
+/* ---------- little sounds ---------- */
+var actx=null;
+function blip(freq, dur, type, vol){
+  try{
+    if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)();
+    if(actx.state==='suspended') actx.resume();
+    var o=actx.createOscillator(), g=actx.createGain();
+    o.type=type||'sine'; o.frequency.value=freq;
+    g.gain.setValueAtTime(0, actx.currentTime);
+    g.gain.linearRampToValueAtTime(vol||0.15, actx.currentTime+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime+(dur||0.18));
+    o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime+(dur||0.18)+0.02);
+  }catch(e){}
+}
+var good=function(){ blip(660,.12,'triangle',.12); setTimeout(function(){blip(880,.16,'triangle',.12);},90); };
+var nope=function(){ blip(240,.16,'sine',.08); };
+var win =function(){ [523,659,784,1047].forEach(function(f,i){ setTimeout(function(){ blip(f,.22,'triangle',.13); }, i*110); }); };
+
+/* ---------- wordling art ---------- */
+var CRIT_COLORS = ['#FF7A6B','#2FC3B4','#FFC145','#A78BFA','#5FCF6B','#6EC6FF','#FF9CC5','#F98E4B','#4FD1C5','#C46BFF'];
+function critterSVG(seed){
+  var r = rngFrom(hash(seed)), pick=function(a){ return a[Math.floor(r()*a.length)]; };
+  var col = pick(CRIT_COLORS);
+  var dark = shade(col,-28), light = shade(col,34);
+  var bodyType = Math.floor(r()*5);
+  var body;
+  if(bodyType===0) body = '<circle cx="50" cy="56" r="33"/>';
+  else if(bodyType===1) body = '<rect x="19" y="26" width="62" height="60" rx="24"/>';
+  else if(bodyType===2) body = '<ellipse cx="50" cy="56" rx="27" ry="35"/>';
+  else if(bodyType===3) body = '<ellipse cx="50" cy="60" rx="36" ry="27"/>';
+  else body = '<path d="M50 20 C74 34 82 52 78 66 C74 82 62 90 50 90 C38 90 26 82 22 66 C18 52 26 34 50 20Z"/>';
+
+  var top='', topType=Math.floor(r()*6);
+  if(topType===0) top='<path d="M50 25 L50 12" stroke="'+dark+'" stroke-width="5" stroke-linecap="round"/><circle cx="50" cy="9" r="6" fill="'+dark+'"/>';
+  else if(topType===1) top='<circle cx="27" cy="26" r="11" fill="'+col+'"/><circle cx="73" cy="26" r="11" fill="'+col+'"/>';
+  else if(topType===2) top='<path d="M38 24 L50 6 L62 24Z" fill="'+dark+'"/>';
+  else if(topType===3) top='<path d="M50 24 C42 12 54 6 58 12 C64 4 74 14 62 24Z" fill="'+shade(col,60)+'"/>';
+  else if(topType===4) top='<path d="M30 24 Q50 4 70 24" fill="none" stroke="'+dark+'" stroke-width="5" stroke-linecap="round"/><circle cx="30" cy="24" r="4" fill="'+dark+'"/><circle cx="70" cy="24" r="4" fill="'+dark+'"/>';
+
+  var pat='', patType=Math.floor(r()*4);
+  if(patType===0) pat='<circle cx="34" cy="70" r="6" fill="'+light+'" opacity=".55"/><circle cx="64" cy="76" r="5" fill="'+light+'" opacity=".55"/><circle cx="70" cy="58" r="4" fill="'+light+'" opacity=".55"/>';
+  else if(patType===1) pat='<path d="M22 66 Q50 78 78 66" fill="none" stroke="'+light+'" stroke-width="6" opacity=".5" stroke-linecap="round"/>';
+  else if(patType===2) pat='<ellipse cx="50" cy="72" rx="18" ry="12" fill="'+light+'" opacity=".5"/>';
+
+  var ex=Math.floor(r()*4), eyes;
+  if(ex===0) eyes='<circle cx="40" cy="52" r="9" fill="#fff"/><circle cx="62" cy="52" r="9" fill="#fff"/><circle cx="41" cy="53" r="4.5" fill="#3B2A2F"/><circle cx="63" cy="53" r="4.5" fill="#3B2A2F"/>';
+  else if(ex===1) eyes='<circle cx="40" cy="52" r="12" fill="#fff"/><circle cx="63" cy="52" r="7" fill="#fff"/><circle cx="41" cy="53" r="6" fill="#3B2A2F"/><circle cx="64" cy="53" r="3.5" fill="#3B2A2F"/><circle cx="38" cy="49" r="2.4" fill="#fff"/>';
+  else if(ex===2) eyes='<path d="M32 52 Q40 44 48 52" stroke="#3B2A2F" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M54 52 Q62 44 70 52" stroke="#3B2A2F" stroke-width="4" fill="none" stroke-linecap="round"/>';
+  else eyes='<circle cx="50" cy="50" r="14" fill="#fff"/><circle cx="51" cy="51" r="7" fill="#3B2A2F"/><circle cx="47" cy="46" r="3" fill="#fff"/>';
+
+  var mx=Math.floor(r()*4), mouth;
+  if(mx===0) mouth='<path d="M42 68 Q50 76 58 68" stroke="#3B2A2F" stroke-width="3.5" fill="none" stroke-linecap="round"/>';
+  else if(mx===1) mouth='<ellipse cx="50" cy="70" rx="7" ry="6" fill="#3B2A2F"/><ellipse cx="50" cy="72" rx="4" ry="3" fill="#FF9CC5"/>';
+  else if(mx===2) mouth='<path d="M42 70 Q46 66 50 70 Q54 74 58 70" stroke="#3B2A2F" stroke-width="3.5" fill="none" stroke-linecap="round"/>';
+  else mouth='<circle cx="50" cy="70" r="4" fill="#3B2A2F"/>';
+
+  return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'+
+    '<g fill="'+dark+'"><ellipse cx="37" cy="90" rx="9" ry="6"/><ellipse cx="63" cy="90" rx="9" ry="6"/></g>'+
+    top+
+    '<g fill="'+col+'">'+body+'</g>'+ pat + eyes + mouth +
+  '</svg>';
+}
+function shade(hex, amt){
+  var n = parseInt(hex.slice(1),16), r=(n>>16)+amt, g=((n>>8)&255)+amt, b=(n&255)+amt;
+  var c=function(x){ return Math.max(0,Math.min(255,x)); };
+  return '#'+((1<<24)+(c(r)<<16)+(c(g)<<8)+c(b)).toString(16).slice(1);
+}
+
+/* ---------- navigation ---------- */
+function show(id){
+  $$('.screen').forEach(function(s){ s.classList.toggle('on', s.id===id); });
+  if(id==='room') renderIsland();
+  if(id==='packs') renderPacks();
+  if(id==='home') renderHome();
+}
+$$('[data-back]').forEach(function(b){ b.addEventListener('click', function(){ show(b.dataset.back); }); });
+
+/* ---------- home ---------- */
+function renderHome(){
+  $('#mascot').innerHTML = '<div style="width:min(180px,42vw);margin:0 auto 4px">'+critterSVG('Wordlings')+'</div>';
+  $('#islandCount').textContent = S.island.length ? '('+S.island.length+')' : '';
+}
+$('#btnPlay').addEventListener('click', function(){ blip(700,.1,'triangle',.1); show('packs'); });
+$('#btnIsland').addEventListener('click', function(){ show('room'); });
+
+/* ---------- packs ---------- */
+function renderPacks(){
+  var el = $('#packList'); el.innerHTML='';
+  PACKS.forEach(function(p){
+    var ws = packWords(p.id);
+    var done = ws.filter(function(w){ return prog(w[0]).written>0; }).length;
+    var pct = ws.length ? Math.round(done/ws.length*100) : 0;
+    var b = document.createElement('button');
+    b.className='pack';
+    b.innerHTML = '<div class="emo">'+p.emoji+'</div><div style="flex:1">'+
+      '<div class="nm">'+p.name+'</div><div class="bl">'+p.blurb+' · '+ws.length+' words</div>'+
+      '<div class="bar"><i style="width:'+pct+'%"></i></div></div>';
+    b.addEventListener('click', function(){
+      if(!ws.length){ nope(); alert('No words in here yet. A grown-up can add some from the ⚙️ button on the front page.'); return; }
+      S.lastPack = p.id; save(); startPack(p.id);
+    });
+    el.appendChild(b);
+  });
+}
+
+/* ---------- play ---------- */
+var cur = null; // {word, chunks, sentence, pack, mode}
+function startPack(pid){
+  $('#playPack').textContent = (PACKS.filter(function(p){return p.id===pid;})[0]||{}).name || '';
+  show('play'); nextWord(pid);
+}
+function nextWord(pid){
+  var ws = packWords(pid);
+  var scored = ws.map(function(w){ var p=prog(w[0]); return {w:w, score:p.written*2+p.built}; });
+  var min = Math.min.apply(null, scored.map(function(s){return s.score;}));
+  var pool = scored.filter(function(s){ return s.score<=min; }).map(function(s){return s.w;});
+  if(cur && pool.length>1) pool = pool.filter(function(w){ return w[0]!==cur.word; });
+  var w = pool[Math.floor(Math.random()*pool.length)];
+  cur = { word:w[0], chunks:w[1].split('|'), sentence:w[2], pack:pid,
+          mode: prog(w[0]).built>0 ? 'write' : 'build' };
+  phaseMeet();
+}
+
+function chunkHTML(txt, i, extra){
+  // mark double letters gently
+  var out='', j=0;
+  while(j<txt.length){
+    var a=txt[j], b=txt[j+1];
+    if(b && a.toLowerCase()===b.toLowerCase() && 'bcdfglmnprstz'.indexOf(a.toLowerCase())>-1){
+      out += '<span class="dbl">'+a+b+'</span>'; j+=2;
+    } else { out += a; j++; }
+  }
+  var cls = (typeof i === 'number') ? 'c'+(i%6) : '';
+  return '<span class="chunk '+cls+' '+(extra||'')+'">'+out+'</span>';
+}
+
+/* whole word with tricky bits (double letters, silent friends) marked */
+function trickyWordHTML(word){
+  var out='', j=0;
+  var pats = ['ough','augh','tion','sion','cian','ould','eigh','ough'];
+  while(j<word.length){
+    var four = word.substr(j,4).toLowerCase();
+    if(pats.indexOf(four)>-1){ out+='<span class="dbl">'+word.substr(j,4)+'</span>'; j+=4; continue; }
+    var a=word[j], b=word[j+1];
+    if(b && a.toLowerCase()===b.toLowerCase() && 'bcdfglmnprstz'.indexOf(a.toLowerCase())>-1){
+      out += '<span class="dbl">'+a+b+'</span>'; j+=2; continue;
+    }
+    out += a; j++;
+  }
+  return out;
+}
+
+function eggHTML(){
+  return '<div class="egg"><svg viewBox="0 0 100 100"><ellipse cx="50" cy="58" rx="30" ry="37" fill="#fff"/>'+
+    '<ellipse cx="50" cy="58" rx="30" ry="37" fill="none" stroke="rgba(59,42,47,.15)" stroke-width="3"/>'+
+    '<circle cx="40" cy="46" r="5" fill="#FFD9D4"/><circle cx="62" cy="60" r="6" fill="#CFF3EE"/>'+
+    '<circle cx="46" cy="74" r="4.5" fill="#FFEFC2"/><circle cx="60" cy="38" r="4" fill="#E6DEFF"/>'+
+    '<circle cx="34" cy="64" r="3.5" fill="#D8F5DC"/></svg></div>';
+}
+
+function phaseMeet(){
+  var st=$('#stage'), bar=$('#playBar');
+  st.innerHTML =
+    eggHTML()+
+    '<div class="label">Look &amp; listen</div>'+
+    '<div class="bigword">'+ trickyWordHTML(cur.word) +'</div>'+
+    '<div class="wordrow">'+ cur.chunks.map(function(c,i){ return chunkHTML(c,i); }).join('') +'</div>'+
+    '<div class="sentence">'+ cur.sentence +'</div>';
+  bar.innerHTML =
+    '<button class="btn ghost sm" id="mSlow">🐢 Chunks</button>'+
+    '<button class="btn teal sm" id="mGo">I\'m ready →</button>';
+  $$('#stage .chunk').forEach(function(el,i){ el.addEventListener('click', function(){ say(cur.chunks[i], 0.75); el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }); });
+  $('#mSlow').addEventListener('click', function(){ sayChunks(cur.chunks); });
+  $('#mGo').addEventListener('click', function(){ cur.mode==='write' ? phaseWrite() : phaseBuild(); });
+  setTimeout(function(){ say(cur.word); }, 220);
+}
+
+function peek(){
+  var st=$('#stage');
+  var p=document.createElement('div');
+  p.style.cssText='position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;z-index:20;pointer-events:none';
+  p.innerHTML='<div style="display:inline-block;background:#fff;border-radius:22px;padding:14px 20px;font-size:clamp(22px,7vw,38px);font-weight:800;box-shadow:0 8px 0 var(--shadow)">'+cur.word+'</div>';
+  st.style.position='relative'; st.appendChild(p);
+  say(cur.word);
+  setTimeout(function(){ p.remove(); }, 2200);
+}
+
+/* ---- build mode: put the chunks in order ---- */
+function phaseBuild(){
+  var st=$('#stage'), bar=$('#playBar');
+  var order = shuffle(cur.chunks.map(function(c,i){ return {c:c,i:i}; }));
+  var placed = 0, wrongHere = 0;
+  st.innerHTML =
+    eggHTML()+
+    '<div class="label">Put the chunks in order</div>'+
+    '<div class="slots" id="slots">'+ cur.chunks.map(function(){ return '<div class="slot"></div>'; }).join('') +'</div>'+
+    '<div style="height:6px"></div>'+
+    '<div class="tray" id="tray">'+ order.map(function(o){ return chunkHTML(o.c,'n'); }).join('') +'</div>';
+  bar.innerHTML =
+    '<button class="icon-btn" id="bPeek">👀</button>'+
+    '<button class="btn ghost sm" id="bSay">🔊 Say it</button>'+
+    '<button class="btn ghost sm" id="bSkip">Skip →</button>';
+  $('#bPeek').addEventListener('click', peek);
+  $('#bSay').addEventListener('click', function(){ say(cur.word); });
+  $('#bSkip').addEventListener('click', function(){ nextWord(cur.pack); });
+
+  var slots = $$('#slots .slot'), tiles = $$('#tray .chunk');
+  tiles.forEach(function(t, k){
+    t.addEventListener('click', function(){
+      if(t.classList.contains('used')) return;
+      if(order[k].i === placed){
+        good();
+        var s = slots[placed];
+        s.className='slot filled chunk c'+(order[k].i%6)+' pop';
+        s.innerHTML = t.innerHTML;
+        t.classList.add('used');
+        say(order[k].c, 0.75);
+        placed++; wrongHere=0;
+        $$('#tray .chunk').forEach(function(x){ x.classList.remove('hint'); });
+        if(placed===cur.chunks.length){
+          var p=prog(cur.word); p.built++; S.progress[cur.word]=p; save();
+          setTimeout(function(){ say(cur.word); }, 260);
+          setTimeout(function(){ hatch(); }, 900);
+        }
+      } else {
+        nope();
+        t.classList.remove('shake'); void t.offsetWidth; t.classList.add('shake');
+        wrongHere++;
+        if(wrongHere>=2){
+          tiles.forEach(function(x,m){ if(order[m].i===placed && !x.classList.contains('used')) x.classList.add('hint'); });
+        }
+      }
+    });
+  });
+}
+
+/* ---- write mode: spell each chunk with letter tiles ---- */
+function phaseWrite(){
+  var st=$('#stage'), bar=$('#playBar');
+  var ci = 0;              // which chunk we're spelling
+  var built = [];          // finished chunks
+  st.innerHTML =
+    eggHTML()+
+    '<div class="label">Now spell it, chunk by chunk</div>'+
+    '<div class="slots" id="slots"></div>'+
+    '<div class="label" id="whichChunk" style="margin-top:4px"></div>'+
+    '<div class="tray" id="tray"></div>';
+  bar.innerHTML =
+    '<button class="icon-btn" id="bPeek">👀</button>'+
+    '<button class="btn ghost sm" id="bSay">🔊 Say it</button>'+
+    '<button class="btn ghost sm" id="bSkip">Skip →</button>';
+  $('#bPeek').addEventListener('click', peek);
+  $('#bSay').addEventListener('click', function(){ say(cur.word); });
+  $('#bSkip').addEventListener('click', function(){ nextWord(cur.pack); });
+
+  function drawSlots(partial){
+    $('#slots').innerHTML = cur.chunks.map(function(c,i){
+      if(i<ci) return '<span class="chunk c'+(i%6)+'">'+built[i]+'</span>';
+      if(i===ci) return '<span class="chunk c'+(i%6)+'" style="min-width:60px;outline:4px solid var(--sun);outline-offset:2px">'+(partial||'')+'<span style="opacity:.4;letter-spacing:2px">'+'•'.repeat(Math.max(0,c.length-(partial||'').length))+'</span></span>';
+      return '<div class="slot" style="min-width:'+(c.length*16+20)+'px"></div>';
+    }).join('');
+  }
+  function startChunk(){
+    if(ci>=cur.chunks.length){
+      var p=prog(cur.word); p.written++; S.progress[cur.word]=p; save();
+      drawSlots(''); $('#whichChunk').textContent=''; $('#tray').innerHTML='';
+      setTimeout(function(){ say(cur.word); }, 200);
+      setTimeout(hatch, 800); return;
+    }
+    var target = cur.chunks[ci], typed='', wrongHere=0;
+    var extras = 'abcdefghijklmnoprstuvwy'.split('');
+    var pool = target.split('');
+    var rnd = rngFrom(hash(cur.word+ci));
+    for(var k=0;k<2;k++){ pool.push(extras[Math.floor(rnd()*extras.length)]); }
+    pool = shuffle(pool, rnd);
+    drawSlots('');
+    $('#whichChunk').textContent = 'chunk '+(ci+1)+' of '+cur.chunks.length;
+    $('#tray').innerHTML = pool.map(function(l){ return '<button class="letter">'+l+'</button>'; }).join('');
+    setTimeout(function(){ say(target, 0.7); }, 150);
+    $$('#tray .letter').forEach(function(b){
+      b.addEventListener('click', function(){
+        if(b.classList.contains('used')) return;
+        var need = target[typed.length];
+        if(b.textContent.toLowerCase()===String(need).toLowerCase()){
+          typed += need; b.classList.add('used'); blip(600+typed.length*60,.09,'triangle',.1);
+          drawSlots(typed);
+          if(typed.length===target.length){
+            good(); built.push(target); ci++;
+            setTimeout(startChunk, 420);
+          }
+        } else {
+          nope(); wrongHere++;
+          b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+          if(wrongHere>=2){
+            $$('#tray .letter').forEach(function(x){
+              if(!x.classList.contains('used') && x.textContent.toLowerCase()===String(need).toLowerCase()) x.classList.add('hint');
+            });
+          }
+        }
+      });
+    });
+  }
+  startChunk();
+}
+
+/* ---- hatching reward ---- */
+function hatch(){
+  win();
+  var isNew = S.island.filter(function(c){ return c.w===cur.word; }).length===0;
+  if(isNew){
+    S.island.push({ w:cur.word, x:Math.random()*0.8+0.05, y:Math.random()*0.7+0.14 });
+  }
+  save();
+  var h = $('#hatch');
+  h.innerHTML =
+    (isNew? '<div class="label">A new Wordling!</div>' : '<div class="label">Well done!</div>')+
+    critterSVG(cur.word)+
+    '<div style="font-size:clamp(22px,7vw,34px);font-weight:800">'+cur.word+'</div>'+
+    '<div class="sentence">'+cur.sentence+'</div>'+
+    '<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">'+
+      '<button class="btn ghost sm" id="hIsland">🏝️ Island</button>'+
+      '<button class="btn teal" id="hNext">Next word →</button>'+
+    '</div>';
+  h.classList.add('on');
+  confetti(h);
+  $('#hNext').addEventListener('click', function(){ h.classList.remove('on'); nextWord(cur.pack); });
+  $('#hIsland').addEventListener('click', function(){ h.classList.remove('on'); show('room'); });
+}
+function confetti(host){
+  var cols=['#FF7A6B','#2FC3B4','#FFC145','#A78BFA','#5FCF6B','#6EC6FF','#FF9CC5'];
+  for(var i=0;i<28;i++){
+    (function(i){
+      var d=document.createElement('div'); d.className='confetti';
+      d.style.background=cols[i%cols.length];
+      d.style.left=(20+Math.random()*60)+'%'; d.style.top='40%';
+      host.appendChild(d);
+      var dx=(Math.random()-0.5)*320, dy=-120-Math.random()*180, rot=Math.random()*720-360;
+      try{
+        d.animate([{transform:'translate(0,0) rotate(0)',opacity:1},
+                   {transform:'translate('+dx+'px,'+(dy+520)+'px) rotate('+rot+'deg)',opacity:0}],
+                  {duration:1400+Math.random()*700, easing:'cubic-bezier(.2,.6,.4,1)'});
+      }catch(e){}
+      setTimeout(function(){ d.remove(); }, 2200);
+    })(i);
+  }
+}
+
+/* ---------- island ---------- */
+var SCENERY =
+ '<div id="scenery"><svg viewBox="0 0 400 700" preserveAspectRatio="none">'+
+ '<circle cx="330" cy="70" r="34" fill="#FFE08A"/>'+
+ '<ellipse cx="90" cy="90" rx="46" ry="20" fill="#fff" opacity=".75"/>'+
+ '<ellipse cx="120" cy="80" rx="30" ry="16" fill="#fff" opacity=".75"/>'+
+ '<ellipse cx="290" cy="160" rx="38" ry="16" fill="#fff" opacity=".6"/>'+
+ '<path d="M0 470 Q100 400 210 465 Q300 515 400 455 L400 700 L0 700Z" fill="#8FDCA0" opacity=".85"/>'+
+ '<path d="M0 545 Q120 490 250 545 Q330 578 400 535 L400 700 L0 700Z" fill="#F2E0AE"/>'+
+ '<g><path d="M60 560 L60 470" stroke="#B98650" stroke-width="9" stroke-linecap="round"/>'+
+ '<ellipse cx="40" cy="462" rx="26" ry="11" fill="#4FBF6A" transform="rotate(-18 40 462)"/>'+
+ '<ellipse cx="82" cy="460" rx="26" ry="11" fill="#5FCF6B" transform="rotate(16 82 460)"/>'+
+ '<ellipse cx="60" cy="446" rx="24" ry="10" fill="#3FAF5A"/></g>'+
+ '<g><path d="M345 600 L345 520" stroke="#B98650" stroke-width="8" stroke-linecap="round"/>'+
+ '<ellipse cx="326" cy="513" rx="22" ry="9" fill="#4FBF6A" transform="rotate(-20 326 513)"/>'+
+ '<ellipse cx="364" cy="512" rx="22" ry="9" fill="#5FCF6B" transform="rotate(18 364 512)"/></g>'+
+ '<ellipse cx="180" cy="640" rx="22" ry="9" fill="#E3CE93"/><ellipse cx="255" cy="665" rx="16" ry="7" fill="#E3CE93"/>'+
+ '</svg></div>';
+
+function renderIsland(){
+  var area=$('#islandArea'); area.innerHTML=SCENERY;
+  if(!S.island.length){
+    area.insertAdjacentHTML('beforeend','<div class="empty-note">Your island is empty.<br>Spell a word to hatch your first Wordling!</div>');
+    return;
+  }
+  S.island.forEach(function(c, idx){
+    var d=document.createElement('div'); d.className='crit';
+    d.innerHTML = critterSVG(c.w) + '<div class="nametag">'+c.w+'</div>';
+    place(d,c);
+    area.appendChild(d);
+    makeDraggable(d, c, area);
+  });
+}
+function place(el,c){
+  var area=$('#islandArea'), W=area.clientWidth||360, H=area.clientHeight||500;
+  el.style.left = Math.round(c.x*(W-88))+'px';
+  el.style.top  = Math.round(c.y*(H-100))+'px';
+}
+function makeDraggable(el, c, area){
+  var sx=0, sy=0, ox=0, oy=0, moved=false, id=null;
+  el.addEventListener('pointerdown', function(e){
+    id=e.pointerId; moved=false;
+    el.setPointerCapture(id); el.classList.add('dragging');
+    sx=e.clientX; sy=e.clientY; ox=el.offsetLeft; oy=el.offsetTop;
+  });
+  el.addEventListener('pointermove', function(e){
+    if(id===null) return;
+    var dx=e.clientX-sx, dy=e.clientY-sy;
+    if(Math.abs(dx)>4||Math.abs(dy)>4) moved=true;
+    var W=area.clientWidth, H=area.clientHeight;
+    el.style.left = Math.max(0,Math.min(W-88, ox+dx))+'px';
+    el.style.top  = Math.max(0,Math.min(H-100, oy+dy))+'px';
+  });
+  var end=function(e){
+    if(id===null) return;
+    el.classList.remove('dragging'); id=null;
+    var W=area.clientWidth, H=area.clientHeight;
+    c.x = el.offsetLeft/(W-88); c.y = el.offsetTop/(H-100); save();
+    if(!moved){ say(c.w); el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+  };
+  el.addEventListener('pointerup', end);
+  el.addEventListener('pointercancel', end);
+}
+$('#btnShuffleIsland').addEventListener('click', function(){
+  S.island.forEach(function(c){ c.x=Math.random()*0.72+0.06; c.y=Math.random()*0.6+0.15; });
+  save(); renderIsland(); blip(520,.12,'triangle',.1);
+});
+
+/* ---------- grown-ups ---------- */
+$('#btnGrown').addEventListener('click', function(){ $('#grownSheet').classList.add('on'); renderGrown(); });
+$('#btnCloseGrown').addEventListener('click', function(){ $('#grownSheet').classList.remove('on'); renderHome(); });
+$('#grownSheet').addEventListener('click', function(e){ if(e.target===$('#grownSheet')) $('#grownSheet').classList.remove('on'); });
+
+function renderGrown(){
+  $('#rate').value = S.rate;
+  loadVoices();
+  var words = allWords();
+  var built = Object.keys(S.progress).length;
+  var mastered = words.filter(function(w){ return prog(w[0]).written>0; }).length;
+  $('#statBox').innerHTML =
+    '<b>'+built+'</b> words attempted · <b>'+mastered+'</b> spelled from memory · <b>'+S.island.length+'</b> Wordlings hatched.'+
+    (built? '<br><br>Trickiest so far: '+trickiest().join(', ') : '');
+  $('#myWords').innerHTML = S.custom.length
+    ? S.custom.map(function(c,i){ return '<span class="chip">'+c[1].split('|').join('-')+' <b data-del="'+i+'" style="color:#FF7A6B;cursor:pointer">✕</b></span>'; }).join('')
+    : '<span class="hintline">No custom words yet.</span>';
+  $$('#myWords [data-del]').forEach(function(b){
+    b.addEventListener('click', function(){ S.custom.splice(+b.dataset.del,1); save(); renderGrown(); });
+  });
+}
+function trickiest(){
+  return Object.keys(S.progress)
+    .map(function(w){ return {w:w, n:prog(w).built+prog(w).written}; })
+    .sort(function(a,b){ return a.n-b.n; }).slice(0,5).map(function(x){ return x.w; });
+}
+$('#rate').addEventListener('input', function(){ S.rate=parseFloat(this.value); save(); });
+$('#voicePick').addEventListener('change', function(){ S.voice=this.value; save(); say('Hello Isabel Leyla'); });
+$('#btnTestVoice').addEventListener('click', function(){ say('Hello Isabel Leyla, let us spell together.'); });
+$('#btnAddWord').addEventListener('click', function(){
+  var w = $('#newWord').value.trim();
+  if(!w){ nope(); return; }
+  var ch = $('#newChunks').value.trim();
+  var chunks = ch ? ch.split(/[-·|\s]+/).filter(Boolean) : guessChunks(w);
+  if(chunks.join('').toLowerCase() !== w.toLowerCase()){
+    $('#addMsg').textContent = 'Chunks must spell the word exactly.'; $('#addMsg').style.color='#FF7A6B'; nope(); return;
+  }
+  var sent = $('#newSentence').value.trim() || ('Can you spell "'+w+'"?');
+  S.custom.push([w, chunks.join('|'), sent]); save();
+  $('#newWord').value=''; $('#newChunks').value=''; $('#newSentence').value='';
+  $('#addMsg').textContent='Added ✓'; $('#addMsg').style.color='';
+  good(); renderGrown();
+  setTimeout(function(){ $('#addMsg').textContent=''; }, 2000);
+});
+$('#btnReset').addEventListener('click', function(){
+  if(confirm('Erase all progress, Wordlings and custom words?')){
+    S = { progress:{}, island:[], custom:[], rate:0.85, voice:'', lastPack:'p1' };
+    save(); renderGrown(); renderHome();
+  }
+});
+
+$('#btnSay').addEventListener('click', function(){ if(cur) say(cur.word); });
+
+/* ---------- boot ---------- */
+try{ window.__critter = critterSVG; }catch(e){}
+if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
+  window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
+}
+try{ speechSynthesis.onvoiceschanged = loadVoices; }catch(e){}
+setTimeout(loadVoices, 300);
+window.addEventListener('resize', function(){ if($('#room').classList.contains('on')) renderIsland(); });
+document.addEventListener('gesturestart', function(e){ e.preventDefault(); });
+renderHome();
+
+})();
+
+</script>
+</body>
+</html>
